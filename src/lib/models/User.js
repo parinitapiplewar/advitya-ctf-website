@@ -37,6 +37,14 @@ const UserSchema = new mongoose.Schema({
     },
   },
 
+  solvedChallenges: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Challenge",
+    },
+    
+  ],
+
   createdAt: {
     type: Date,
     default: Date.now,

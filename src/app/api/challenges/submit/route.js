@@ -1,157 +1,127 @@
 import connectDB from "@/lib/db";
 import Challenge from "@/lib/models/Challenge";
 import Team from "@/lib/models/Team";
+import User from "@/lib/models/User";
 import jwt from "jsonwebtoken";
-import logger from "@/utils/logger";
 import { rateLimit } from "@/lib/rateLimiter";
 import { NextResponse } from "next/server";
 
-const loginLimiter = rateLimit({ windowMs: 60_000, max: 5 });
+const SubmitLimiter = rateLimit({ windowMs: 60_000, max: 5 });
 
 export async function POST(req) {
-  const forwarded = req.headers.get("x-forwarded-for");
-  const ip = forwarded ? forwarded.split(",")[0] : "Unknown";
-
   try {
-    if (!loginLimiter(req)) {
-      logger.warn(`💀 Rate limit exceeded on Challenge submit | IP: ${ip}`);
+    if (!SubmitLimiter(req)) {
       return NextResponse.json(
-        {
-          success: false,
-          message: "Too many attempts, try again later.",
-        },
+        { success: false, message: "Too many attempts, try again later." },
         { status: 429 }
       );
     }
-    let body;
-    try {
-      body = await req.json();
-    } catch (err) {
-      logger.warn(
-        `⚠️ Invalid JSON body in /submit | IP: ${ip} | Error: ${err.message}`
-      );
-      return new Response(
-        JSON.stringify({ success: false, message: "Invalid JSON body" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
-      );
-    }
 
-    const { challengeId, flag } = body;
+    const { challengeId, flag } = await req.json();
+
     if (!challengeId || !flag) {
-      logger.warn(`⚠️ Missing challengeId or flag in /submit | IP: ${ip}`);
-      return new Response(
-        JSON.stringify({
-          success: false,
-          message: "Missing challengeId or flag",
-        }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+      return NextResponse.json(
+        { success: false, message: "Missing entries" },
+        { status: 400 }
       );
     }
 
     const authHeader = req.headers.get("authorization");
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      logger.warn(`❌ Unauthorized access to /submit | IP: ${ip}`);
-      return new Response(
-        JSON.stringify({ success: false, message: "Unauthorized" }),
-        { status: 401, headers: { "Content-Type": "application/json" } }
+    if (!authHeader?.startsWith("Bearer ")) {
+      return NextResponse.json(
+        { success: false, message: "Unauthorized" },
+        { status: 401 }
       );
     }
 
     const token = authHeader.split(" ")[1];
     let decoded;
+
     try {
       decoded = jwt.verify(token, process.env.JWT_SECRET);
-    } catch (err) {
-      logger.warn(
-        `⚠️ Invalid/expired token on /submit | IP: ${ip} | Error: ${err.message}`
-      );
-      return new Response(
-        JSON.stringify({
-          success: false,
-          message: "Session Expired or Unauthorized Access.",
-        }),
-        { status: 401, headers: { "Content-Type": "application/json" } }
+    } catch {
+      return NextResponse.json(
+        { success: false, message: "Session expired" },
+        { status: 401 }
       );
     }
 
     await connectDB();
 
-    const challenge = await Challenge.findById(challengeId);
-    if (!challenge) {
-      logger.warn(
-        `❌ Challenge not found | Challenge ID: ${challengeId} | IP: ${ip}`
-      );
-      return new Response(
-        JSON.stringify({ success: false, message: "Challenge not found" }),
-        { status: 404, headers: { "Content-Type": "application/json" } }
+    const user = await User.findById(decoded.userId);
+    if (!user || !user.team) {
+      return NextResponse.json(
+        { success: false, message: "Join a team first" },
+        { status: 403 }
       );
     }
 
-    const team = await Team.findById(decoded.userId);
-    if (!team) {
-      logger.warn(
-        `❌ Team not found during /submit | Team ID: ${decoded.userId} | IP: ${ip}`
-      );
-      return new Response(
-        JSON.stringify({ success: false, message: "Team not found" }),
-        { status: 404, headers: { "Content-Type": "application/json" } }
+    const [team, challenge] = await Promise.all([
+      Team.findById(user.team),
+      Challenge.findById(challengeId),
+    ]);
+
+    if (!team || !challenge) {
+      return NextResponse.json(
+        { success: false, message: "Team or Challenge not found" },
+        { status: 404 }
       );
     }
 
-    // Already solved
-    if (
-      team.solvedChallenges.includes(challengeId) ||
-      challenge.solvedBy.includes(decoded.userId)
-    ) {
-      logger.info(
-        `⚠️ Challenge already solved | Challenge ID: ${challengeId} | Team: ${team.teamName} | IP: ${ip}`
-      );
-      return new Response(
-        JSON.stringify({
-          success: false,
-          message: "Challenge already solved...",
-        }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+    const teamAlreadySolved =
+      team.solvedChallenges.some((id) => id.equals(challenge._id)) ||
+      challenge.solvedBy.some((s) => s.team.equals(team._id));
+
+    if (teamAlreadySolved) {
+      return NextResponse.json(
+        { success: false, message: "Your team already solved this challenge" },
+        { status: 400 }
       );
     }
 
-    // Correct flag
-    if (flag === challenge.flag) {
-      // team.solvedChallenges.push(challengeId);
-      // team.score += challenge.value;
-      // await team.save();
-
-      // challenge.solvedBy.push(decoded.userId);
-      // await challenge.save();
-
-      logger.info(
-        `✅ TRIED SOLVING FLAG AFTER CHALLENGE END | Challenge: ${challenge.name} | Submitted Flag: ${flag} | Team: ${team.teamName} | New Score: ${team.score} | IP: ${ip}`
-      );
-
-      return new Response(
-        JSON.stringify({
-          success: true,
-          message: "Flag Submission Ended",
-          newScore: team.score,
-        }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
-      );
-    } else {
-      logger.info(
-        `❌ Incorrect flag submitted | Challenge: ${challenge.name} | Submitted Flag: ${flag} | Team: ${team.teamName} | IP: ${ip}`
-      );
-      return new Response(
-        JSON.stringify({ success: false, message: "Flag Submission Ended" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+    // ❌ Incorrect flag
+    if (flag !== challenge.flag) {
+      return NextResponse.json(
+        { success: false, message: "Incorrect flag" },
+        { status: 400 }
       );
     }
-  } catch (err) {
-    logger.error(
-      `💀 Server error in /submit | IP: ${ip} | Error: ${err.stack}`
+
+    team.solvedChallenges.push(challenge._id);
+    team.score += challenge.value;
+
+    challenge.solvedBy.push({
+      team: team._id,
+      user: user._id,
+      solvedAt: new Date(),
+    });
+
+    user.solvedChallenges.push(challenge._id);
+
+    await Promise.all([team.save(), challenge.save(), user.save()]);
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Solved successfully!",
+        newScore: team.score,
+      },
+      { status: 200 }
     );
-    return new Response(
-      JSON.stringify({ success: false, message: "Internal server error" }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+  } catch (err) {
+    // Mongo duplicate key → team already solved (race-safe)
+    if (err.code === 11000) {
+      return NextResponse.json(
+        { success: false, message: "Your team already solved this challenge" },
+        { status: 400 }
+      );
+    }
+
+    console.log("CHALLENGE SUBMIT ERROR:", err);
+
+    return NextResponse.json(
+      { success: false, message: "Internal server error" },
+      { status: 500 }
     );
   }
 }

@@ -587,3 +587,58 @@
 [2026-01-17 17:39:44] INFO: ✅ Visible challenges fetched | Count: 0 | IP: ::1
 [2026-01-17 17:39:44] WARN: ❌ Team not found when fetching solved challenges | Team ID: 68bd4af3dc667ed4013631fe | IP: ::1
 [2026-01-17 17:39:45] WARN: ❌ Team not found when fetching solved challenges | Team ID: 68bd4af3dc667ed4013631fe | IP: ::1
+[2026-01-17 20:46:35] WARN: ⚠️ Invalid token while fetching leaderboard | IP: ::1 | Error: Cannot access 'decoded' before initialization
+[2026-01-17 20:46:36] WARN: ⚠️ Invalid token while fetching leaderboard | IP: ::1 | Error: Cannot access 'decoded' before initialization
+[2026-01-17 20:46:36] INFO: ✅ Visible challenges fetched | Count: 0 | IP: ::1
+[2026-01-17 20:46:36] INFO: ✅ Visible challenges fetched | Count: 0 | IP: ::1
+[2026-01-17 20:46:36] WARN: ❌ Team not found when fetching solved challenges | Team ID: 68bd4af3dc667ed4013631fe | IP: ::1
+[2026-01-17 20:46:37] WARN: ❌ Team not found when fetching solved challenges | Team ID: 68bd4af3dc667ed4013631fe | IP: ::1
+[2026-01-17 20:46:49] INFO: ✅ Visible challenges fetched | Count: 1 | IP: ::1
+[2026-01-17 20:46:49] INFO: ✅ Visible challenges fetched | Count: 1 | IP: ::1
+[2026-01-17 20:46:49] WARN: ❌ Team not found when fetching solved challenges | Team ID: 68bd4af3dc667ed4013631fe | IP: ::1
+[2026-01-17 20:46:50] WARN: ❌ Team not found when fetching solved challenges | Team ID: 68bd4af3dc667ed4013631fe | IP: ::1
+[2026-01-17 20:46:54] WARN: ❌ Team not found during /submit | Team ID: 68bd4af3dc667ed4013631fe | IP: ::1
+[2026-01-17 20:47:19] INFO: ✅ Visible challenges fetched | Count: 1 | IP: ::1
+[2026-01-17 20:47:19] WARN: ❌ Team not found when fetching solved challenges | Team ID: 696a1fdc899f6b0dc09d55c6 | IP: ::1
+[2026-01-17 20:47:19] INFO: ✅ Visible challenges fetched | Count: 1 | IP: ::1
+[2026-01-17 20:47:19] WARN: ❌ Team not found when fetching solved challenges | Team ID: 696a1fdc899f6b0dc09d55c6 | IP: ::1
+[2026-01-17 20:47:23] WARN: ❌ Team not found during /submit | Team ID: 696a1fdc899f6b0dc09d55c6 | IP: ::1
+[2026-01-17 20:48:13] WARN: ❌ Team not found during /submit | Team ID: undefined | IP: ::1
+[2026-01-17 22:35:34] INFO: ✅ Visible challenges fetched | Count: 1 | IP: ::1
+[2026-01-17 22:35:35] INFO: ✅ Visible challenges fetched | Count: 1 | IP: ::1
+[2026-01-17 22:35:35] WARN: ❌ Team not found when fetching solved challenges | Team ID: 68bd4af3dc667ed4013631fe | IP: ::1
+[2026-01-17 22:35:35] WARN: ❌ Team not found when fetching solved challenges | Team ID: 68bd4af3dc667ed4013631fe | IP: ::1
+[2026-01-17 22:48:27] WARN: ❌ Team not found when fetching solved challenges | Team ID: 696a71843ad52be277ac1637 | IP: ::1
+[2026-01-17 22:48:28] WARN: ❌ Team not found when fetching solved challenges | Team ID: 696a71843ad52be277ac1637 | IP: ::1
+[2026-01-17 22:48:41] INFO: ❌ Incorrect flag submitted | Challenge: Abubakr is dumb | Submitted Flag: 1234 | Team: undefined | IP: ::1
+[2026-01-17 22:50:07] INFO: ❌ Incorrect flag submitted | Challenge: Abubakr is dumb | Submitted Flag: 1234 | Team: undefined | IP: ::1
+[2026-01-17 22:50:44] INFO: ❌ Incorrect flag submitted | Challenge: Abubakr is dumb | Submitted Flag: 1234 | Team: undefined | IP: ::1
+[2026-01-17 22:54:19] WARN: ⚠️ Invalid token while fetching leaderboard | IP: ::1 | Error: Cannot access 'decoded' before initialization
+[2026-01-17 22:54:20] WARN: ⚠️ Invalid token while fetching leaderboard | IP: ::1 | Error: Cannot access 'decoded' before initialization
+[2026-01-17 22:54:22] WARN: ❌ Team not found when fetching solved challenges | Team ID: 696a71843ad52be277ac1637 | IP: ::1
+[2026-01-17 22:54:23] WARN: ❌ Team not found when fetching solved challenges | Team ID: 696a71843ad52be277ac1637 | IP: ::1
+[2026-01-17 22:54:42] INFO: ❌ Incorrect flag submitted | Challenge: Abubakr is dumb | Submitted Flag: 1234 | Team: undefined | IP: ::1
+[2026-01-17 23:01:08] WARN: ❌ Team not found when fetching solved challenges | Team ID: 68bd4af3dc667ed4013631fe | IP: ::1
+[2026-01-17 23:01:08] WARN: ❌ Team not found when fetching solved challenges | Team ID: 68bd4af3dc667ed4013631fe | IP: ::1
+[2026-01-17 23:01:33] WARN: ❌ Team not found when fetching solved challenges | Team ID: 696a71843ad52be277ac1637 | IP: ::1
+[2026-01-17 23:01:33] WARN: ❌ Team not found when fetching solved challenges | Team ID: 696a71843ad52be277ac1637 | IP: ::1
+[2026-01-17 23:02:10] WARN: ❌ Team not found when fetching solved challenges | Team ID: 696a71843ad52be277ac1637 | IP: ::1
+[2026-01-17 23:02:10] WARN: ❌ Team not found when fetching solved challenges | Team ID: 696a71843ad52be277ac1637 | IP: ::1
+[2026-01-17 23:02:29] WARN: ⚠️ Invalid token while fetching leaderboard | IP: ::1 | Error: Cannot access 'decoded' before initialization
+[2026-01-17 23:02:30] WARN: ⚠️ Invalid token while fetching leaderboard | IP: ::1 | Error: Cannot access 'decoded' before initialization
+[2026-01-17 23:02:32] WARN: ❌ Team not found when fetching solved challenges | Team ID: 696a1fdc899f6b0dc09d55c6 | IP: ::1
+[2026-01-17 23:02:33] WARN: ❌ Team not found when fetching solved challenges | Team ID: 696a1fdc899f6b0dc09d55c6 | IP: ::1
+[2026-01-17 23:09:19] WARN: ⚠️ Invalid token while fetching leaderboard | IP: ::1 | Error: Cannot access 'decoded' before initialization
+[2026-01-17 23:09:20] WARN: ⚠️ Invalid token while fetching leaderboard | IP: ::1 | Error: Cannot access 'decoded' before initialization
+[2026-01-17 23:10:43] WARN: ⚠️ Invalid token while fetching leaderboard | IP: ::1 | Error: Cannot access 'decoded' before initialization
+[2026-01-17 23:10:44] WARN: ⚠️ Invalid token while fetching leaderboard | IP: ::1 | Error: Cannot access 'decoded' before initialization
+[2026-01-17 23:34:56] WARN: ⚠️ Invalid token while fetching leaderboard | IP: ::1 | Error: Cannot access 'decoded' before initialization
+[2026-01-17 23:34:57] WARN: ⚠️ Invalid token while fetching leaderboard | IP: ::1 | Error: Cannot access 'decoded' before initialization
+[2026-01-18 00:20:42] WARN: ⚠️ Invalid token while fetching leaderboard | IP: ::1 | Error: Cannot access 'decoded' before initialization
+[2026-01-18 00:20:42] WARN: ⚠️ Invalid token while fetching leaderboard | IP: ::1 | Error: Cannot access 'decoded' before initialization
+[2026-01-18 00:22:54] WARN: ⚠️ Invalid token while fetching leaderboard | IP: ::1 | Error: Cannot access 'decoded' before initialization
+[2026-01-18 00:22:54] WARN: ⚠️ Invalid token while fetching leaderboard | IP: ::1 | Error: Cannot access 'decoded' before initialization
+[2026-01-18 00:23:13] WARN: ⚠️ Invalid token while fetching leaderboard | IP: ::1 | Error: Cannot access 'decoded' before initialization
+[2026-01-18 00:23:13] WARN: ⚠️ Invalid token while fetching leaderboard | IP: ::1 | Error: Cannot access 'decoded' before initialization
+[2026-01-18 00:23:23] WARN: ⚠️ Invalid token while fetching leaderboard | IP: ::1 | Error: Cannot access 'decoded' before initialization
+[2026-01-18 00:23:24] WARN: ⚠️ Invalid token while fetching leaderboard | IP: ::1 | Error: Cannot access 'decoded' before initialization

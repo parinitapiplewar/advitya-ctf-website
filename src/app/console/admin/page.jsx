@@ -1,7 +1,15 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Users, Flag, Shield, Bell, Terminal, Settings } from "lucide-react";
+import {
+  User,
+  Users,
+  Flag,
+  Shield,
+  Bell,
+  Terminal,
+  Settings,
+} from "lucide-react";
 
 import Challenges from "@/components/admin/Challenges";
 import UsersComponent from "@/components/admin/Users";
@@ -16,13 +24,13 @@ import { useRouter } from "next/navigation";
 const tabs = [
   {
     id: "controls",
-    label: "Admin Controls",
+    label: "Controls",
     icon: Settings,
     component: Controls,
   },
   { id: "challenges", label: "Challenges", icon: Flag, component: Challenges },
-  { id: "users", label: "Users", icon: Users, component: UsersComponent },
-  { id: "teams", label: "Teams", icon: Shield, component: Teams },
+  { id: "users", label: "Users", icon: User, component: UsersComponent },
+  { id: "teams", label: "Teams", icon: Users, component: Teams },
   {
     id: "notification",
     label: "Notification",
@@ -74,16 +82,16 @@ export default function Page() {
       {role == "sudo" && (
         <div>
           {/* NAV */}
-          <nav className="px-8 w-screen mt-4 lg:mt-0">
-            <div className="flex flex-wrap space-x-8">
+          <nav className="px-8 flex justify-between w-screen mt-4 lg:mt-0 border-b border-white/10 pb-4">
+            <div className="flex flex-wrap space-x-4">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center space-x-2 px-4 py-4 rounded-lg transition ${
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition ${
                     activeTab === tab.id
                       ? "text-black bg-white"
-                      : "text-slate-300 hover:text-white"
+                      : "text-white/80 hover:text-white"
                   }`}
                 >
                   <tab.icon className="w-6 h-6" />
@@ -91,12 +99,15 @@ export default function Page() {
                 </button>
               ))}
             </div>
+            <div className="hidden gap-2 lg:flex items-center justify-center font-semibold text-xl ">
+              <Shield className="w-6 h-6 "></Shield>
+              <span>Admin Panel</span>
+            </div>
           </nav>
 
           {/* CONTENT */}
           <section className="px-8 py-6">
             {ActiveComponent && <ActiveComponent />}
-            
           </section>
         </div>
       )}

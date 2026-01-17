@@ -46,7 +46,7 @@ const Page = () => {
       return;
     }
 
-    const fetchAuth = async () => {
+    const fetchChallenges = async () => {
       try {
         const token = localStorage.getItem("token");
 
@@ -75,7 +75,7 @@ const Page = () => {
         setLoading(false);
       }
     };
-    fetchAuth();
+    fetchChallenges();
   }, [user, router]);
 
   const handleInputChange = (e) => {
@@ -286,7 +286,7 @@ const Page = () => {
         <div className="text-center">
           <div className="w-8 h-8 border-3 border-white/10 border-t-red-500 rounded-full animate-spin mx-auto mb-4"></div>
           <div className="text-slate-300 font-medium">
-            Loading Admin Portal...
+            Loading All Challenges...
           </div>
         </div>
       </div>

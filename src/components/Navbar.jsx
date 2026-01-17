@@ -321,7 +321,7 @@ export default function Navbar() {
 
                 <div className="flex items-center gap-2 justify-center">
                   <User className="h-4 w-4 text-white" />
-                  <span className="text-sm font-semibold text-white">
+                  <span className="text-sm font-semibold text-white whitespace-nowrap">
                     {user.name}
                   </span>
                 </div>

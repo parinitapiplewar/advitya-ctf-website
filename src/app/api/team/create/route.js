@@ -59,6 +59,13 @@ export async function POST(req) {
       );
     }
 
+    if (user.role === "sudo") {
+      return NextResponse.json(
+        { success: false, message: "Admin Should not Create Team" },
+        { status: 401 }
+      );
+    }
+
     if (user.team) {
       return NextResponse.json(
         { success: false, message: "User already in a team" },
