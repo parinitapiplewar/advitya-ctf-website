@@ -20,7 +20,7 @@ const SolveSchema = new mongoose.Schema(
       default: Date.now,
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const ChallengeSchema = new mongoose.Schema(
@@ -53,12 +53,12 @@ const ChallengeSchema = new mongoose.Schema(
       default: [],
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 ChallengeSchema.index(
   { _id: 1, "solvedBy.team": 1 },
-  { unique: true, sparse: true }
+  { unique: true, sparse: true },
 );
 
 export default mongoose.models.Challenge ||

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Users, Lock, Eye, EyeOff, LogIn } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 export default function JoinTeam({ onJoined }) {
   const [teams, setTeams] = useState([]);
@@ -10,6 +11,8 @@ export default function JoinTeam({ onJoined }) {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const { login } = useAuth();
 
   /* ---------------- FETCH TEAM NAMES ---------------- */
 
@@ -72,6 +75,9 @@ export default function JoinTeam({ onJoined }) {
         toastId: "myTeam",
       });
       onJoined();
+
+      login(data.token, data.user);
+
     } catch (err) {
       toast.error(err?.message || "Failed to join team", {
         theme: "dark",
@@ -138,11 +144,11 @@ export default function JoinTeam({ onJoined }) {
                   </option>
                   {teams.map((team) => (
                     <option
-                      key={team}
-                      value={team}
+                      key={team.name}
+                      value={team.name}
                       className="bg-black text-white text-lg"
                     >
-                      {team}
+                      {team.name}
                     </option>
                   ))}
                 </select>

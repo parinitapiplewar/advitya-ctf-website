@@ -50,7 +50,7 @@ export async function POST(req) {
 
     await connectDB();
     console.log(decoded);
-    
+
     const user = await User.findById(decoded.userId);
     if (!user) {
       return NextResponse.json(
@@ -93,24 +93,28 @@ export async function POST(req) {
     user.team = team._id;
     await user.save();
 
+    const newToken = jwt.sign(
+      {
+        userId: user._id,
+        name: user.name,
+        role: user.role,
+        team: user.team || null,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
     /* ---------------- RESPONSE ---------------- */
 
     return NextResponse.json(
       {
         success: true,
-        team: {
-          _id: team._id,
-          name: team.name,
-          captainId: team.captainId,
-          members: [
-            {
-              _id: user._id,
-              name: user.name,
-              email: user.email,
-            },
-          ],
-          score: team.score,
+        user: {
+          name: user.name,
+          id: user._id,
         },
+
+        token: newToken,
       },
       { status: 201 }
     );

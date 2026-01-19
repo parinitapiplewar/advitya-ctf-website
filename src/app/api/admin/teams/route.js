@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import connectDB from "@/lib/db";
 import User from "@/lib/models/User";
 import Team from "@/lib/models/Team";
+import "@/lib/models/Challenge";
 import jwt from "jsonwebtoken";
 
 export async function GET(req) {
@@ -9,7 +10,7 @@ export async function GET(req) {
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return new Response(
       JSON.stringify({ success: false, message: "Unauthorized" }),
-      { status: 401, headers: { "Content-Type": "application/json" } }
+      { status: 401, headers: { "Content-Type": "application/json" } },
     );
   }
 
@@ -35,13 +36,19 @@ export async function GET(req) {
 
       return NextResponse.json(
         { success: true, role: decoded.role, teams },
-        { status: 200 }
+        { status: 200 },
       );
     } else {
       return NextResponse.json(
         { success: false, message: "Forbidden: Not Admin" },
-        { status: 403 }
+        { status: 403 },
       );
     }
-  } catch (err) {}
+  } catch (err) {
+    console.log(err);
+    return NextResponse.json(
+      { success: false, message: "Internal Server Error" },
+      { status: 500 },
+    );
+  }
 }

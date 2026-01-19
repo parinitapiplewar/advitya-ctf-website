@@ -53,7 +53,7 @@ export async function POST(req) {
     }
 
     const token = jwt.sign(
-      { userId: user._id, role: user.role },
+      { userId: user._id, name:user.name, role: user.role, team: user.team || null },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
@@ -65,7 +65,6 @@ export async function POST(req) {
       user: {
         name: user.name,
         id: user._id,
-        team: user.team || null,
       },
     });
   } catch (err) {

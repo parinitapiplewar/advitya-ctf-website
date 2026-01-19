@@ -5,6 +5,7 @@ import User from "@/lib/models/User";
 import jwt from "jsonwebtoken";
 import { rateLimit } from "@/lib/rateLimiter";
 import { NextResponse } from "next/server";
+import { broadcast } from "@/lib/socket";
 
 const SubmitLimiter = rateLimit({ windowMs: 60_000, max: 5 });
 
@@ -13,7 +14,7 @@ export async function POST(req) {
     if (!SubmitLimiter(req)) {
       return NextResponse.json(
         { success: false, message: "Too many attempts, try again later." },
-        { status: 429 }
+        { status: 429 },
       );
     }
 
@@ -22,7 +23,7 @@ export async function POST(req) {
     if (!challengeId || !flag) {
       return NextResponse.json(
         { success: false, message: "Missing entries" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -30,7 +31,7 @@ export async function POST(req) {
     if (!authHeader?.startsWith("Bearer ")) {
       return NextResponse.json(
         { success: false, message: "Unauthorized" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -42,7 +43,7 @@ export async function POST(req) {
     } catch {
       return NextResponse.json(
         { success: false, message: "Session expired" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -52,7 +53,7 @@ export async function POST(req) {
     if (!user || !user.team) {
       return NextResponse.json(
         { success: false, message: "Join a team first" },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -64,7 +65,7 @@ export async function POST(req) {
     if (!team || !challenge) {
       return NextResponse.json(
         { success: false, message: "Team or Challenge not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -75,7 +76,7 @@ export async function POST(req) {
     if (teamAlreadySolved) {
       return NextResponse.json(
         { success: false, message: "Your team already solved this challenge" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -83,9 +84,11 @@ export async function POST(req) {
     if (flag !== challenge.flag) {
       return NextResponse.json(
         { success: false, message: "Incorrect flag" },
-        { status: 400 }
+        { status: 400 },
       );
     }
+
+    const isFirstBlood = challenge.solvedBy.length === 0;
 
     team.solvedChallenges.push(challenge._id);
     team.score += challenge.value;
@@ -99,6 +102,22 @@ export async function POST(req) {
     user.solvedChallenges.push(challenge._id);
 
     await Promise.all([team.save(), challenge.save(), user.save()]);
+    if (isFirstBlood) {
+      broadcast({
+        type: "FIRST_BLOOD",
+        challenge: challenge.name,
+        team: team.name,
+        user: user.name,
+        value: challenge.value,
+        timestamp: Date.now(),
+      });
+    } else {
+      broadcast({
+        type: "SOLVE",
+        message: `Team ${team.name} solved ${challenge.name}`,
+        timestamp: Date.now(),
+      });
+    }
 
     return NextResponse.json(
       {
@@ -106,14 +125,13 @@ export async function POST(req) {
         message: "Solved successfully!",
         newScore: team.score,
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (err) {
-    // Mongo duplicate key → team already solved (race-safe)
     if (err.code === 11000) {
       return NextResponse.json(
         { success: false, message: "Your team already solved this challenge" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -121,7 +139,7 @@ export async function POST(req) {
 
     return NextResponse.json(
       { success: false, message: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

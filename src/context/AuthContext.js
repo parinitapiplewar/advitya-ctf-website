@@ -56,6 +56,7 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(false);
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    window.location.reload();
   };
 
   useEffect(() => {

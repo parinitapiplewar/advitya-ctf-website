@@ -2,6 +2,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import NotificationListener from "@/components/NotificationListener";
 
 import { AuthProvider } from "@/context/AuthContext";
 
@@ -65,6 +66,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className="">
         <AuthProvider>
+          <NotificationListener />
           <Navbar />
           <main className="max-h-[90vh] max-w-screen relative sm:top-[79px] top-[60px]">
             {children}

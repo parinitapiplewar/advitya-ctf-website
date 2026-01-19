@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { Users, Lock, Shield, Eye, EyeOff, Plus } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 export default function CreateTeam({ onCreated }) {
   const [teamName, setTeamName] = useState("");
@@ -12,6 +13,8 @@ export default function CreateTeam({ onCreated }) {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [loading, setLoading] = useState(false);
+
+  const { login } = useAuth();
 
   const createTeam = async () => {
     if (!teamName || !password || !confirmPassword) {
@@ -52,6 +55,8 @@ export default function CreateTeam({ onCreated }) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
 
+      login(data.token, data.user);
+
       toast.success("Team Created Successfully", {
         theme: "dark",
         position: "bottom-right",
@@ -59,6 +64,8 @@ export default function CreateTeam({ onCreated }) {
         toastId: "myTeam",
       });
       onCreated(data.team);
+
+      window.location.reload();
     } catch (err) {
       console.log(err);
 

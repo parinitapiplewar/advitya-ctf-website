@@ -91,18 +91,27 @@ export async function POST(req) {
     user.team = team._id;
     await user.save();
 
+    const newToken = jwt.sign(
+      {
+        userId: user._id,
+        name: user.name,
+        role: user.role,
+        team: user.team || null,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
     /* ---------------- RESPONSE ---------------- */
 
     return NextResponse.json(
       {
         success: true,
-        team: {
-          _id: team._id,
-          name: team.name,
-          captainId: team.captainId,
-          score: team.score,
-          members: team.members,
+        user: {
+          name: user.name,
+          id: user._id,
         },
+        token: newToken,
       },
       { status: 200 }
     );
