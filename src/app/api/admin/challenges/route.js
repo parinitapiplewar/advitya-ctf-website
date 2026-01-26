@@ -20,7 +20,6 @@ export async function GET(req) {
     const adminUser = await User.findById(decoded.userId);
 
     if (decoded.role === "sudo" && adminUser.role === "sudo") {
-      await connectDB();
       const challenges = await Challenge.find({});
 
       return new Response(

@@ -1,0 +1,13 @@
+# Must have these in Dockerfile... 
+
+RUN useradd -m ctf
+
+RUN passwd -l root
+
+RUN apt-get purge -y sudo || true
+
+RUN rm -f /bin/su /usr/bin/su || true
+
+USER ctf
+
+

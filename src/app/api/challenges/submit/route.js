@@ -2,6 +2,8 @@ import connectDB from "@/lib/db";
 import Challenge from "@/lib/models/Challenge";
 import Team from "@/lib/models/Team";
 import User from "@/lib/models/User";
+import Solve from "@/lib/models/Solve";
+
 import jwt from "jsonwebtoken";
 import { rateLimit } from "@/lib/rateLimiter";
 import { NextResponse } from "next/server";
@@ -90,6 +92,13 @@ export async function POST(req) {
 
     const isFirstBlood = challenge.solvedBy.length === 0;
 
+    // 1️⃣ Create solve event (atomic, unique)
+    await Solve.create({
+      team: team._id,
+      challenge: challenge._id,
+      points: challenge.value,
+    });
+
     team.solvedChallenges.push(challenge._id);
     team.score += challenge.value;
 
@@ -102,6 +111,7 @@ export async function POST(req) {
     user.solvedChallenges.push(challenge._id);
 
     await Promise.all([team.save(), challenge.save(), user.save()]);
+
     if (isFirstBlood) {
       broadcast({
         type: "FIRST_BLOOD",

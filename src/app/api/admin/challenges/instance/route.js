@@ -3,8 +3,8 @@ import connectDB from "@/lib/db";
 import Challenge from "@/lib/models/Challenge";
 import User from "@/lib/models/User";
 import jwt from "jsonwebtoken";
-import fs from "fs/promises";     
-import fsSync from "fs";         
+import fs from "fs/promises";
+import fsSync from "fs";
 import path from "path";
 import unzipper from "unzipper";
 
@@ -13,7 +13,7 @@ export async function POST(req) {
   if (!authHeader?.startsWith("Bearer ")) {
     return NextResponse.json(
       { success: false, message: "Unauthorized" },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
@@ -23,7 +23,7 @@ export async function POST(req) {
   } catch {
     return NextResponse.json(
       { success: false, message: "Invalid token" },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
@@ -32,7 +32,7 @@ export async function POST(req) {
   if (!adminUser || decoded.role !== "sudo" || adminUser.role !== "sudo") {
     return NextResponse.json(
       { success: false, message: "Forbidden: Not Admin" },
-      { status: 403 }
+      { status: 403 },
     );
   }
 
@@ -43,7 +43,7 @@ export async function POST(req) {
   if (!bundle || !metadataRaw) {
     return NextResponse.json(
       { success: false, message: "Missing bundle or metadata" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -53,7 +53,7 @@ export async function POST(req) {
   } catch {
     return NextResponse.json(
       { success: false, message: "Invalid metadata JSON" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -61,7 +61,7 @@ export async function POST(req) {
   if (!name || !description || !category || !value) {
     return NextResponse.json(
       { success: false, message: "Missing required fields" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -86,7 +86,7 @@ export async function POST(req) {
   const challDir = path.join(
     process.cwd(),
     "uploads",
-    challenge._id.toString()
+    challenge._id.toString(),
   );
 
   await fs.mkdir(challDir, { recursive: true });
@@ -102,14 +102,14 @@ export async function POST(req) {
 
   const files = await fs.readdir(challDir);
   console.log(files);
-  
+
   if (!files.includes("Dockerfile")) {
     return NextResponse.json(
       {
         success: false,
         message: "Invalid challenge bundle: Dockerfile missing",
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -119,6 +119,6 @@ export async function POST(req) {
       message: "Instance challenge uploaded (build pending)",
       challenge,
     },
-    { status: 201 }
+    { status: 201 },
   );
 }

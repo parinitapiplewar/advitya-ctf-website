@@ -1,7 +1,21 @@
 "use client";
 
-import { Download, Shield, Eye, EyeOff, Trophy , Trash2 } from "lucide-react";
+import { Download, Shield, Eye, EyeOff, Trophy, Trash2 } from "lucide-react";
 import { useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
+import { defaultSchema } from "rehype-sanitize";
+
+const sanitizeSchema = {
+  ...defaultSchema,
+  attributes: {
+    ...defaultSchema.attributes,
+    span: ["className"],
+    code: ["className"],
+  },
+};
 
 export default function NormalChallenge({
   challenge,
@@ -96,13 +110,22 @@ export default function NormalChallenge({
       </div>
 
       {/* Content */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1  gap-4">
         <div>
-          <h3 className="text-lg font-medium text-white mb-1">
+          <div className="flex flex-row gap-2 justify-start items-baseline mb-2">
+            <h3 className="text-2xl font-bold text-white mb-1">
             {challenge.name}
           </h3>
-          <p className="text-xs text-white/70 mb-2">by {challenge.author}</p>
-          <p className="text-sm text-white/80">{challenge.description}</p>
+          <p className="text-lg text-white/90 mb-2">by {challenge.author}</p>
+          </div>
+          <div className=" markdown prose prose-sm prose-invert max-w-none bg-white/5 rounded-lg p-2">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeRaw, [rehypeSanitize, sanitizeSchema]]}
+            >
+              {challenge.description}
+            </ReactMarkdown>
+          </div>
         </div>
 
         <div className="space-y-3">

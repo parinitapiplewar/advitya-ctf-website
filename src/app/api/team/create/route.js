@@ -6,13 +6,11 @@ import Team from "@/lib/models/Team";
 
 export async function POST(req) {
   try {
-    /* ---------------- AUTH ---------------- */
-
     const authHeader = req.headers.get("authorization");
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return NextResponse.json(
         { success: false, message: "Unauthorized" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -24,7 +22,7 @@ export async function POST(req) {
     } catch {
       return NextResponse.json(
         { success: false, message: "Invalid or expired token" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -35,14 +33,17 @@ export async function POST(req) {
     if (!teamName || !password) {
       return NextResponse.json(
         { success: false, message: "Team name and password required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (teamName.length < 3) {
       return NextResponse.json(
-        { success: false, message: "Team name too short" },
-        { status: 400 }
+        {
+          success: false,
+          message: "Team name too short. Should be more than 3 Letters.",
+        },
+        { status: 400 },
       );
     }
 
@@ -55,29 +56,32 @@ export async function POST(req) {
     if (!user) {
       return NextResponse.json(
         { success: false, message: "User not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
     if (user.role === "sudo") {
       return NextResponse.json(
         { success: false, message: "Admin Should not Create Team" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
     if (user.team) {
       return NextResponse.json(
         { success: false, message: "User already in a team" },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
     const existingTeam = await Team.findOne({ name: teamName });
     if (existingTeam) {
       return NextResponse.json(
-        { success: false, message: "Team name already taken" },
-        { status: 409 }
+        {
+          success: false,
+          message: "Team name already taken. Try Different Name",
+        },
+        { status: 409 },
       );
     }
 
@@ -101,10 +105,8 @@ export async function POST(req) {
         team: user.team || null,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "1h" },
     );
-
-    /* ---------------- RESPONSE ---------------- */
 
     return NextResponse.json(
       {
@@ -116,13 +118,13 @@ export async function POST(req) {
 
         token: newToken,
       },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (err) {
     console.error("TEAM CREATE ERROR:", err);
     return NextResponse.json(
       { success: false, message: "Server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -52,7 +52,7 @@ const InstanceControl = ({ instance, onBuildInstance, building }) => {
 
       {/* BUILDING NOTE */}
       {buildStatus === "building" && (
-        <p className="text-xs text-white/60">Building image… please wait</p>
+        <p className="text-xs text-white/60">Building image… please wait. (This will take around 1-5 minutes or maybe 10 depending on chall size and all... if it says error.. reload and check for actual status.. chall will not be live until its build successfully )</p>
       )}
     </div>
   );

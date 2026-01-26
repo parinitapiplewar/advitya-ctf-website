@@ -14,7 +14,7 @@ const execFileAsync = util.promisify(execFile);
 /* ---------- helpers ---------- */
 
 function generateAccessToken() {
-  return crypto.randomBytes(32).toString("hex");
+  return crypto.randomBytes(4).toString("hex");
 }
 
 function generateFlag(teamId, challengeId) {
@@ -106,6 +106,16 @@ export async function POST(req) {
       `FLAG=${flag}`,
       "--memory=256m",
       "--cpus=0.5",
+
+      //new
+      "--pids-limit=64",
+      "--security-opt",
+      "no-new-privileges",
+      "--cap-drop",
+      "ALL",
+      "--read-only",
+      "--tmpfs",
+      "/tmp",
 
       image,
     ]);

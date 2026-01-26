@@ -69,7 +69,7 @@ export default function CreateTeam({ onCreated }) {
     } catch (err) {
       console.log(err);
 
-      toast.error("Error Creating Team. Try Again", {
+      toast.error(err.message || "Error creating team...", {
         theme: "dark",
         position: "bottom-right",
         autoClose: 3000,

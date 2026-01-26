@@ -66,12 +66,12 @@ export default function InstancePanel({ challengeId }) {
           {loading ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" />
-              Starting…
+              Fetching...
             </>
           ) : (
             <>
               <Play className="w-4 h-4" />
-              Start Instance
+              Get Instance URL
             </>
           )}
         </button>

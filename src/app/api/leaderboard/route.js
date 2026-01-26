@@ -2,7 +2,6 @@ import connectDB from "@/lib/db";
 import Team from "@/lib/models/Team";
 import jwt from "jsonwebtoken";
 import logger from "@/utils/logger";
-import { broadcast } from "@/lib/socket";
 
 export async function GET(req) {
   const forwarded = req.headers.get("x-forwarded-for");
@@ -10,61 +9,68 @@ export async function GET(req) {
 
   try {
     await connectDB();
-    const authHeader = req.headers.get("authorization");
-    let currentUser = null;
 
-    const teams = await Team.find()
+    const teams = await Team.find({})
       .sort({ score: -1, updatedAt: 1 })
-      .select("score name _id");
+      .select("_id name score")
+      .lean();
 
-    if (authHeader && authHeader.startsWith("Bearer ")) {
-      const token = authHeader.split(" ")[1];
-      try {
-        console.log(decoded);
-
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const currentUserId = decoded._id;
-
-        
-
-        const idx = teams.findIndex((u) => u._id.toString() === currentUserId);
-        if (idx !== -1) {
-          currentUser = {
-            rank: idx + 1,
-            score: teams[idx].score,
-            teamId: teams[idx]._id,
-          };
-        }
-        logger.info(
-          `✅ Leaderboard fetched with currentUser | Team ID: ${currentUserId} | Rank: ${currentUser?.rank} | IP: ${ip}`,
-        );
-      } catch (err) {
-        logger.warn(
-          `⚠️ Invalid token while fetching leaderboard | IP: ${ip} | Error: ${err.message}`,
-        );
-      }
-    } else {
-      logger.info(`ℹ️ Leaderboard fetched without currentUser | IP: ${ip}`);
-    }
-
-    const leaderboard = teams.map((u, index) => ({
+    const leaderboard = teams.map((team, index) => ({
       rank: index + 1,
-      score: u.score,
-      name: u.name,
-      teamId: u._id,
+      teamId: team._id.toString(),
+      name: team.name,
+      score: team.score,
     }));
 
+    let currentUser = null;
+    const authHeader = req.headers.get("authorization");
+
+    if (authHeader?.startsWith("Bearer ")) {
+      try {
+        const token = authHeader.split(" ")[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        const userTeamId = decoded.team;
+
+        if (userTeamId) {
+          const idx = leaderboard.findIndex((t) => t.teamId === userTeamId);
+
+          if (idx !== -1) {
+            currentUser = {
+              rank: idx + 1,
+              teamId: leaderboard[idx].teamId,
+              score: leaderboard[idx].score,
+            };
+          }
+        }
+      } catch (err) {
+        console.log("Leaderboard Error: ", err);
+      }
+    }
+
     return new Response(
-      JSON.stringify({ success: true, leaderboard, currentUser }),
-      { status: 200, headers: { "Content-Type": "application/json" } },
+      JSON.stringify({
+        success: true,
+        leaderboard,
+        currentUser,
+      }),
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      },
     );
   } catch (err) {
-    logger.error(
-      `💀 Server error in /leaderboard | IP: ${ip} | Error: ${err.stack}`,
-    );
+    console.log("Leaderboard Error: ", err);
+
     return new Response(
-      JSON.stringify({ success: false, message: "Internal server error" }),
-      { status: 500, headers: { "Content-Type": "application/json" } },
+      JSON.stringify({
+        success: false,
+        message: "Internal server error",
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      },
     );
   }
 }

@@ -1,73 +1,72 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Trophy, Target } from "lucide-react";
+import { Trophy, Target, Users } from "lucide-react";
+import MultiTeamScore from "@/components/ScoreChart";
+import NoParticipant from "./component/NoParticipant";
+import FullRanking from "./component/FullRanking";
 
 const Leaderboard = () => {
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentUserInfo, setCurrentUserInfo] = useState(null);
+  const [chartData, setChartData] = useState([]);
+  const [teams, setTeams] = useState([]);
+  const [chartError, setChartError] = useState(null);
 
   useEffect(() => {
-    const loadLeaderboardData = async () => {
+    const loadData = async () => {
+      setIsLoading(true);
+      setError(null);
+      setChartError(null);
+
       try {
         const authToken = localStorage.getItem("token");
-        const response = await fetch("/api/leaderboard", {
-          method: "GET",
+
+        // -------- Leaderboard fetch --------
+        const leaderboardRes = await fetch("/api/leaderboard", {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${authToken}`,
           },
         });
-        const responseData = await response.json();
 
-        console.log(responseData);
+        const leaderboardJson = await leaderboardRes.json();
 
-        if (responseData.success) {
-          setLeaderboardData(responseData.leaderboard);
-          setCurrentUserInfo(responseData.currentUser || null);
-        } else {
-          setError(responseData.message || "Failed to load leaderboard");
+        if (!leaderboardRes.ok || !leaderboardJson.success) {
+          throw new Error(
+            leaderboardJson.message || "Failed to load leaderboard",
+          );
         }
-      } catch (fetchError) {
-        setError("Connection failed");
+
+        setLeaderboardData(leaderboardJson.leaderboard);
+        setCurrentUserInfo(leaderboardJson.currentUser || null);
+
+        // -------- Chart fetch ---------
+        try {
+          const chartRes = await fetch("/api/stats/score-progression");
+          const chartJson = await chartRes.json();
+
+          if (!chartRes.ok || !chartJson.success) {
+            throw new Error(chartJson.message || "Failed to load score chart");
+          }
+
+          setChartData(chartJson.data);
+          setTeams(chartJson.teams);
+        } catch (chartErr) {
+          console.error("Chart load failed:", chartErr);
+          setChartError("Score progression unavailable");
+        }
+      } catch (err) {
+        setError(err.message || "Connection failed");
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadLeaderboardData();
+    loadData();
   }, []);
-
-  const getRankIcon = (position) => {
-    switch (position) {
-      case 1:
-        return (
-          <div className="flex items-center justify-center text-3xl ml-2 font-medium text-amber-400">
-            #{position}
-          </div>
-        );
-      case 2:
-        return (
-          <div className=" flex items-center justify-center text-3xl ml-2 font-medium text-slate-300">
-            #{position}
-          </div>
-        );
-      case 3:
-        return (
-          <div className=" flex items-center justify-center text-3xl ml-2 font-medium text-orange-400">
-            #{position}
-          </div>
-        );
-      default:
-        return (
-          <div className="flex items-center justify-center text-3xl ml-2 font-medium text-slate-400">
-            #{position}
-          </div>
-        );
-    }
-  };
 
   if (isLoading) {
     return (
@@ -97,120 +96,51 @@ const Leaderboard = () => {
     <div className="">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 lg:gap-6">
-          <div className="space-y-1">
-            <h1 className="text-3xl font-bold text-slate-100 border-b-6 pb-1 pr-4 border-b-red-800 max-w-fit">
-              Leaderboards
-            </h1>
-          </div>
+          <h1 className="space-y-1 text-3xl font-bold text-white">
+            Team Leaderboard
+          </h1>
 
           {currentUserInfo?.rank && (
-            <div className="flex items-center justify-center lg:justify-end">
-              <div className="inline-flex items-center gap-3 px-4 py-3 bg-[#232323] border border-white/20 rounded-xl backdrop-blur-sm shadow-lg hover:shadow-red-500/10 transition-all duration-200">
-                <div className="flex items-center justify-center w-8 h-8 bg-red-500/20 rounded-lg">
-                  <Target className="w-4 h-4 text-red-400" />
-                </div>
-                <div className="flex flex-row sm:items-center gap-1 sm:gap-2">
-                  <span className="text-blue-100 font-bold text-md sm:text-base">
-                    Your Team Position: #{currentUserInfo.rank}
-                  </span>
-                  <span className="hidden sm:inline text-blue-200">•</span>
-                  <span className="text-blue-100 font-bold text-md">
-                    {currentUserInfo.score} points
-                  </span>
-                </div>
-              </div>
+            <div className="gap-2 flex">
+              <span className="inline-flex items-center gap-2 bg-white text-black px-4 py-2 rounded-4xl text-sm font-medium ">
+                <Users className="w-4 h-4"></Users>
+                <span>Your Team Rank : {currentUserInfo.rank}</span>
+              </span>
             </div>
           )}
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-6 py-8">
-        {leaderboardData.length === 0 ? (
-          <div className="bg-[#1b1b1b] rounded-xl p-12 text-center border border-[#3a2c2c]">
-            <div className="w-16 h-16 bg-[#2a2323] rounded-full flex items-center justify-center mx-auto mb-4">
-              <Trophy className="w-8 h-8 text-[#a39b9b]" />
-            </div>
-            <h3 className="text-xl font-semibold text-[#d6d6d6] mb-2">
-              No participants yet
-            </h3>
-            <p className="text-[#9c8e8e]">
-              Be the first to join the competition
-            </p>
+      {chartError && (
+        <div className="max-w-6xl mx-auto px-6 mb-6 text-sm text-gray-400">
+          {chartError}
+        </div>
+      )}
+
+      {!chartError && chartData.length > 0 && teams.length > 0 && (
+        <div className="max-w-6xl mx-auto px-6 mb-8">
+          <div className="bg-[#191919] rounded-xl p-4">
+            <h2 className="text-xs uppercase tracking-widest text-gray-400 mb-3">
+              Score Progression
+            </h2>
+
+            <MultiTeamScore data={chartData} teams={teams} />
           </div>
+        </div>
+      )}
+
+      <div className="max-w-6xl mx-auto px-6 py-8">
+        {leaderboardData.length === 0 ? (
+          <NoParticipant />
         ) : (
           <>
             {/* Full Rankings */}
-            <div className="space-y-2 mb-8">
-              {leaderboardData.map((participant, index) => {
-                const position = index + 1;
-                const isCurrentUser = currentUserInfo?.rank === position;
-                const isTop3 = position <= 3;
+            <FullRanking
+              leaderboardData={leaderboardData}
+              currentUserInfo={currentUserInfo}
+            />
 
-                return (
-                  <div
-                    key={participant.teamId}
-                    className={`flex items-center justify-between p-2 rounded-lg shadow-sm border border-white/20 transition-all ${
-                      isCurrentUser
-                        ? "bg-red-400/20 border-blue-500/20 shadow-blue-500/5"
-                        : isTop3
-                        ? "bg-[#292929] border-slate-700/50"
-                        : "bg-[#191919] border-slate-700/30"
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <div className="flex items-center gap-3 min-w-[60px]">
-                        {getRankIcon(position)}
-                      </div>
-
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span
-                            className={`font-semibold ${
-                              isCurrentUser
-                                ? "text-blue-100"
-                                : position === 1
-                                ? "text-amber-300"
-                                : position === 2
-                                ? "text-slate-300"
-                                : position === 3
-                                ? "text-orange-300"
-                                : "text-slate-200"
-                            }`}
-                          >
-                            {participant.name}
-                          </span>
-                          {isCurrentUser && (
-                            <span className="px-2 py-1 bg-red-600 text-blue-100 text-xs font-medium rounded-md shadow-sm">
-                              Your Team
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="text-right">
-                      <div
-                        className={`text-xl font-semibold ${
-                          position === 1
-                            ? "text-amber-300"
-                            : position === 2
-                            ? "text-slate-300"
-                            : position === 3
-                            ? "text-orange-300"
-                            : "text-slate-200"
-                        }`}
-                      >
-                        {participant.score}
-                      </div>
-                      <div className="text-sm text-slate-500">points</div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Stats Card */}
-            <div className="bg-[#191919] rounded-xl p-6 shadow-lg border border-white/20 backdrop-blur-sm">
+            {/* <div className="bg-[#191919] rounded-xl p-6 shadow-lg border border-white/20 backdrop-blur-sm">
               <h2 className="text-lg font-semibold text-slate-200 mb-4 flex items-center gap-2">
                 <div className="w-2 h-2 bg-red-500 rounded-full"></div>
                 Statistics
@@ -232,13 +162,13 @@ const Leaderboard = () => {
                   <div className="text-2xl font-bold text-slate-300 mb-1">
                     {Math.round(
                       leaderboardData.reduce((sum, u) => sum + u.score, 0) /
-                        leaderboardData.length
+                        leaderboardData.length,
                     )}
                   </div>
                   <div className="text-sm text-white/50">Average</div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </>
         )}
       </div>

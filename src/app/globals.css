@@ -13,3 +13,88 @@ body {
   -ms-overflow-style: none; 
   scrollbar-width: none;    
 }
+
+.prose code {
+  background: #3a3a3a;
+  color: #dddddd;
+  padding: 4px 6px;
+  border-radius: 6px;
+}
+
+.prose .flag {
+  background: #3a3a3a;
+  color: #aaffad;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-family: monospace;
+  display: inline-block;
+  font-weight: 700;
+}
+
+.prose > :first-child {
+  margin-top: 0;
+}
+
+.prose > :last-child {
+  margin-bottom: 0;
+}
+
+/* ===== Markdown fixes for Tailwind UI ===== */
+
+.markdown ul {
+  list-style-type: disc;
+  padding-left: 1.25rem;
+}
+
+.markdown ol {
+  list-style-type: decimal;
+  padding-left: 1.25rem;
+}
+
+.markdown li {
+  margin: 0.25rem 0;
+}
+
+.markdown h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.markdown h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.markdown h3 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.markdown p {
+  margin: 1rem 0;
+}
+
+.markdown hr {
+  margin: 0.75rem 0;
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.markdown blockquote {
+  border-left: 3px solid rgba(255, 255, 255, 0.25);
+  padding-left: 0.75rem;
+  color: rgba(255, 255, 255, 0.75);
+  font-style: italic;
+}
+
+.markdown pre {
+  background: #3a3a3a;
+  padding: 0.75rem;
+  border-radius: 8px;
+  overflow-x: auto;
+}
