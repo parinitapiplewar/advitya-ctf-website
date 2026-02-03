@@ -1,14 +1,5 @@
 "use client";
 
-// /src/app/challenges/
-// ├── page.jsx           # Main component with all state & logic
-// ├── CategoryFilter.jsx # Category filter buttons & results count
-// ├── ChallengeGrid.jsx  # Grid container with empty state
-// ├── ChallengeCard.jsx  # Individual challenge card UI
-// ├── ChallengeModal.jsx # Full modal with description, InstancePanel, flag submission
-// ├── FlagSubmit.jsx     # Flag submission form component
-// └── MarkdownRenderer.jsx # XSS-safe markdown rendering
-
 import React, { useEffect, useState } from "react";
 import { Trophy } from "lucide-react";
 import { toast } from "react-toastify";
@@ -53,7 +44,7 @@ const Challenges = () => {
       });
       setError("Authentication Error");
       setLoading(false);
-      router.push("Auth/login");
+      router.replace("/Auth/login");
 
       return;
     }
@@ -66,7 +57,7 @@ const Challenges = () => {
       });
       setError("Authentication Error");
       setLoading(false);
-      router.push("Auth/login");
+      router.replace("/Auth/login");
       return;
     }
     const fetchData = async () => {

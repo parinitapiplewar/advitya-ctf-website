@@ -1,12 +1,9 @@
-// lib/simpleRateLimiter.js
 const ipHits = new Map();
 
 export function rateLimit({ windowMs, max }) {
   return (req) => {
     const ip =
-      req.headers.get("x-forwarded-for")?.split(",")[0] ||
-      req.ip ||
-      "unknown";
+      req.headers.get("x-forwarded-for")?.split(",")[0] || req.ip || "unknown";
 
     const now = Date.now();
     const windowStart = now - windowMs;

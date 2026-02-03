@@ -7,8 +7,6 @@ import {
   Eye,
   EyeOff,
   Shield,
-  CheckCircle,
-  AlertCircle,
   ArrowRight,
   User,
 } from "lucide-react";
@@ -19,8 +17,6 @@ import { toast } from "react-toastify";
 export default function UserRegister() {
   const { login, isAuthenticated } = useAuth();
   const router = useRouter();
-
-  /* ---------------- STATE ---------------- */
 
   const [step, setStep] = useState(1);
 
@@ -44,8 +40,6 @@ export default function UserRegister() {
     success: "",
   });
 
-  /* ---------------- EFFECT ---------------- */
-
   useEffect(() => {
     if (isAuthenticated) {
       toast.error("Already logged in", {
@@ -56,8 +50,6 @@ export default function UserRegister() {
       router.replace("/");
     }
   }, [isAuthenticated, router]);
-
-  /* ---------------- HELPERS ---------------- */
 
   const handleChange = (e) => {
     setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
@@ -132,7 +124,7 @@ export default function UserRegister() {
     }
   };
 
-  /* ---------------- STEP 2: VERIFY OTP ---------------- */
+  /* ------------------- VERIFY OTP ---------------- */
 
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
@@ -193,7 +185,7 @@ export default function UserRegister() {
           <h1 className="text-3xl font-semibold">
             {step === 1 ? "Create Account" : "Verify Email"}
           </h1>
-          <p className="text-gray-400 mt-2">
+          <p className="text-white/80 mt-2">
             Powered by Null Student Chapter VIT Bhopal
           </p>
         </div>
@@ -212,7 +204,7 @@ export default function UserRegister() {
             {step === 1 && (
               <>
                 {/* Name */}
-                <label className="block text-sm text-gray-300 mb-2">Name</label>
+                <label className="block text-sm text-white mb-2">Name</label>
                 <Input
                   icon={User}
                   name="name"
@@ -222,15 +214,13 @@ export default function UserRegister() {
                 />
 
                 {/* Email */}
-                <label className="block text-sm text-gray-300 mb-2">
-                  Email
-                </label>
+                <label className="block text-sm text-white mb-2">Email</label>
                 <Input
                   icon={Mail}
                   name="email"
                   value={form.email}
                   onChange={handleChange}
-                  placeholder="abc@vitbhopal.ac.in"
+                  placeholder="demo.23bce10203@vitbhopal.ac.in"
                 />
 
                 {/* Password */}
@@ -267,7 +257,7 @@ export default function UserRegister() {
               <>
                 <ReadOnly value={form.name} label="Name" />
                 <ReadOnly value={form.email} label="Email" />
-                <label className="block text-sm text-gray-300 mb-2">
+                <label className="block text-sm text-white mb-2">
                   Enter OTP
                 </label>
                 <input
@@ -287,13 +277,13 @@ export default function UserRegister() {
             <button
               type="submit"
               disabled={status.loading}
-              className="w-full py-3 bg-red-900 hover:bg-red-600 rounded-lg font-medium flex justify-center items-center gap-2"
+              className=" w-full flex items-center justify-center space-x-2 py-3 px-4 bg-white/80 hover:bg-white disabled:bg-white/20 text-black disabled:text-white font-medium rounded-lg transition-all duration-200 focus:outline-none  disabled:cursor-not-allowed"
             >
               {status.loading
                 ? "Processing..."
                 : step === 1
-                ? "Next"
-                : "Verify OTP"}
+                  ? "Next"
+                  : "Verify OTP"}
               <ArrowRight className="h-4 w-4" />
             </button>
           </form>
@@ -308,7 +298,7 @@ export default function UserRegister() {
 function Input({ icon: Icon, ...props }) {
   return (
     <div className="relative">
-      <Icon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
+      <Icon className="absolute left-3 top-1/2 -translate-y-1/2 text-white h-5 w-5" />
       <input
         {...props}
         className="w-full pl-12 py-3 bg-white/10 border border-white/20 rounded-lg"
@@ -320,11 +310,12 @@ function Input({ icon: Icon, ...props }) {
 function PasswordInput({ label, value, show, toggle, onChange }) {
   return (
     <div>
-      <label className="text-sm text-gray-300 mb-2 block">{label}</label>
+      <label className="text-sm text-white mb-2 block">{label}</label>
       <div className="relative">
-        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
+        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-white/80 h-5 w-5" />
         <input
           type={show ? "text" : "password"}
+          placeholder="XXXX-XXXX-XXXX"
           value={value}
           onChange={onChange}
           className="w-full pl-12 pr-12 py-3 bg-white/10 border border-white/20 rounded-lg"

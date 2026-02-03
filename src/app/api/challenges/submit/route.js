@@ -82,7 +82,6 @@ export async function POST(req) {
       );
     }
 
-    // ❌ Incorrect flag
     if (flag !== challenge.flag) {
       return NextResponse.json(
         { success: false, message: "Incorrect flag" },
@@ -92,7 +91,6 @@ export async function POST(req) {
 
     const isFirstBlood = challenge.solvedBy.length === 0;
 
-    // 1️⃣ Create solve event (atomic, unique)
     await Solve.create({
       team: team._id,
       challenge: challenge._id,

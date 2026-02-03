@@ -1,4 +1,3 @@
-import teamSchema from "@/lib/models/Team";
 import userSchema from "@/lib/models/User";
 import logger from "@/utils/logger";
 import connectDB from "@/lib/db";
@@ -14,13 +13,12 @@ export async function POST(req) {
 
   try {
     if (!loginLimiter(req)) {
-      logger.warn(`💀 Rate limit exceeded on Login attempt | IP: ${ip}`);
       return NextResponse.json(
         {
           success: false,
           message: "Too many login attempts, try again later.",
         },
-        { status: 429 }
+        { status: 429 },
       );
     }
 
@@ -32,30 +30,35 @@ export async function POST(req) {
       logger.warn(`⚠️ Login attempt with missing fields →  [IP: ${ip}]`);
       return NextResponse.json(
         { success: false, message: "email and Password required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     const user = await userSchema.findOne({ email }).select("+password");
     if (!user) {
       return NextResponse.json(
-        { success: false, message: "Invalid User.. Please Try Again" },
-        { status: 400 }
+        { success: false, message: "Invalid Credentials.. Please Try Again" },
+        { status: 400 },
       );
     }
 
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return NextResponse.json(
-        { success: false, message: "Invalid Password.. Please Try Again" },
-        { status: 400 }
+        { success: false, message: "Invalid Credentials.. Please Try Again" },
+        { status: 400 },
       );
     }
 
     const token = jwt.sign(
-      { userId: user._id, name:user.name, role: user.role, team: user.team || null },
+      {
+        userId: user._id,
+        name: user.name,
+        role: user.role,
+        team: user.team || null,
+      },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "1h" },
     );
 
     return NextResponse.json({
@@ -70,7 +73,7 @@ export async function POST(req) {
   } catch (err) {
     return NextResponse.json(
       { success: false, message: "Server Error..." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

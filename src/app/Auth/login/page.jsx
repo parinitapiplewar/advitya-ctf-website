@@ -10,7 +10,6 @@ import {
   Shield,
   CheckCircle,
   AlertCircle,
-  Flag,
   ArrowRight,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
@@ -72,7 +71,7 @@ export default function UserLogin() {
         if (data.token && data.user) {
           login(data.token, data.user);
         }
-        setSuccess("Login successful! Welcome back to HackSecure.");
+        setSuccess("Login successful!");
         toast.success("Logged in successfully!", {
           theme: "dark",
           position: "bottom-right",
@@ -104,12 +103,12 @@ export default function UserLogin() {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center space-x-3 mb-4">
-            <h1 className="text-3xl font-semibold text-slate-100 tracking-tight">
+            <h1 className="text-3xl font-bold text-white tracking-tight">
               Sign in to continue
             </h1>
           </div>
 
-          <p className="text-gray-400">
+          <p className="text-white/80">
             Powered by Null Student Chapter VIT Bhopal
           </p>
         </div>
@@ -128,19 +127,19 @@ export default function UserLogin() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-300 mb-2"
+                className="block text-sm font-medium text-white mb-2"
               >
                 Email
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80 h-5 w-5" />
                 <input
                   type="mail"
                   id="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="demo.25bce10203@vitbhopal.ac.in"
-                  className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 transition-all"
+                  className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none "
                   disabled={loading}
                   onKeyDown={(e) => e.key === "Enter" && handleLogin(e)}
                 />
@@ -151,19 +150,19 @@ export default function UserLogin() {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-300 mb-2"
+                className="block text-sm font-medium text-white mb-2"
               >
                 Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80 h-5 w-5" />
                 <input
                   type={showPassword ? "text" : "password"}
                   id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="XXXX-XXXX-XXXX"
-                  className="w-full pl-12 pr-12 py-3 bg-white/10 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 transition-all"
+                  className="w-full pl-12 pr-12 py-3 bg-white/10 border border-white/10 rounded-lg text-white placeholder-white/60 focus:outline-none "
                   disabled={loading}
                   onKeyDown={(e) => e.key === "Enter" && handleLogin(e)}
                 />
@@ -183,14 +182,14 @@ export default function UserLogin() {
 
             {error && (
               <div className="flex items-center space-x-2 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-                <AlertCircle className="h-4 w-4 text-red-400 flex-shrink-0" />
+                <AlertCircle className="h-4 w-4 text-red-400 shrink-0" />
                 <span className="text-sm text-red-400">{error}</span>
               </div>
             )}
 
             {success && (
               <div className="flex items-center space-x-2 p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
-                <CheckCircle className="h-4 w-4 text-green-400 flex-shrink-0" />
+                <CheckCircle className="h-4 w-4 text-green-400 shrink-0" />
                 <span className="text-sm text-green-400">{success}</span>
               </div>
             )}
@@ -198,7 +197,7 @@ export default function UserLogin() {
             <button
               onClick={handleLogin}
               disabled={loading || !email || !password}
-              className="w-full flex items-center justify-center space-x-2 py-3 px-4 bg-red-900 hover:bg-red-600 disabled:bg-white/20 text-white font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center space-x-2 py-3 px-4 bg-white/80 hover:bg-white disabled:bg-white/20 text-black disabled:text-white font-medium rounded-lg transition-all duration-200 focus:outline-none  disabled:cursor-not-allowed"
             >
               {loading ? (
                 <>
@@ -222,22 +221,21 @@ export default function UserLogin() {
                 </span>
               </div>
               <div className="mt-6">
-                <ul className="list-disc list-inside space-y-2 text-gray-400 text-sm">
+                <ul className=" list-inside space-y-2 text-white/80 text-sm">
                   <li>
-                    Keep your Team ID and Password secret. Sharing them outside
-                    your team may result in disqualification.
+                    Keep your Credentials secret. Sharing them may result in disqualification.
                   </li>
-                  <li>
+                  {/* <li>
                     All team members must use the same credentials, including
                     the team leader.
-                  </li>
-                  <li>
+                  </li> */}
+                  {/* <li>
                     Do not attempt to create new accounts. Only credentials
                     provided by the admin are valid.
-                  </li>
-                  <li>
+                  </li> */}
+                  {/* <li>
                     Enter credentials exactly as provided to avoid login issues.
-                  </li>
+                  </li> */}
                 </ul>
               </div>
             </div>

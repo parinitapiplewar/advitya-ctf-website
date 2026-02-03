@@ -100,7 +100,8 @@ export async function POST(req) {
       "--label",
       `traefik.http.routers.${containerName}.rule=Host(\`${accessToken}.umairmalik.space\`)`,
       "--label",
-      `traefik.http.services.${containerName}.loadbalancer.server.port=80`,
+      // `traefik.http.services.${containerName}.loadbalancer.server.port=80`,
+      `traefik.http.services.${containerName}.loadbalancer.server.port=3000`,
 
       "-e",
       `FLAG=${flag}`,
