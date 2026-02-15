@@ -16,6 +16,7 @@ import {
   Users,
   Bell,
   User,
+  Scale,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
@@ -34,6 +35,7 @@ export default function Navbar() {
     { name: "Leaderboard", href: "/leaderboard", icon: Trophy },
     { name: "Teams", href: "/teams", icon: Users },
     { name: "Notifications", href: "/notifications", icon: Bell },
+    { name: "Rules", href: "/rules", icon: Scale },
     { name: "MyTeam", href: "/myTeam", icon: Users },
   ];
 
